@@ -57,12 +57,12 @@ void Widget::on_pushButton_clicked()
                      minS*ui->lineEdit_S->text().toInt();
 
 
-    QString calculated = "Minimum earned: "+QString::number(minPay)+"\n";
+    QString calculated = "Minimum earned: "+QString::number(minPay/4)+"\n";
 
     if(sExist)
-        calculated += "Maximum earned: "+QString::number(maxPay)+"+\n";
+        calculated += "Maximum earned: "+QString::number(maxPay/4)+"+\n";
     else
-        calculated += "Maximum earned: "+QString::number(maxPay)+"\n";
+        calculated += "Maximum earned: "+QString::number(maxPay/4)+"\n";
 
     QMessageBox mbCalculated;
 
