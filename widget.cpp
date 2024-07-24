@@ -1,13 +1,16 @@
 #include "widget.h"
 #include "ui_widget.h"
+#include "calculatedwindow.h"
 #include <QIntValidator>
 #include <QRegularExpression>
-#include<QMessageBox>
+#include <QMessageBox>
+
 
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::Widget)
 {
+
     ui->setupUi(this);
     QRegularExpression regExp("[0-9][0-9][0-9][0-9]");
     ui->lineEdit_D->setValidator(new QRegularExpressionValidator(regExp,this));
@@ -15,6 +18,7 @@ Widget::Widget(QWidget *parent)
     ui->lineEdit_B->setValidator(new QRegularExpressionValidator(regExp,this));
     ui->lineEdit_A->setValidator(new QRegularExpressionValidator(regExp,this));
     ui->lineEdit_S->setValidator(new QRegularExpressionValidator(regExp,this));
+    this->setWindowTitle("Ninja Salaries");
 }
 
 Widget::~Widget()
@@ -56,18 +60,48 @@ void Widget::on_pushButton_clicked()
                      maxA*ui->lineEdit_A->text().toInt()+
                      minS*ui->lineEdit_S->text().toInt();
 
+    QString displayedMinPay = QString::number(minPay/4);
+    QString displayedMaxPay = QString::number(maxPay/4);
 
-    QString calculated = "Minimum earned: "+QString::number(minPay/4)+"\n";
+    for(int i = displayedMinPay.size()-3; i>0; i-=3){
+        displayedMinPay.insert(i," ");
+    }
+    for(int i = displayedMaxPay.size()-3; i>0; i-=3){
+        displayedMaxPay.insert(i," ");
+    }
 
-    if(sExist)
-        calculated += "Maximum earned: "+QString::number(maxPay/4)+"+\n";
-    else
-        calculated += "Maximum earned: "+QString::number(maxPay/4)+"\n";
+    if(sExist){
+        displayedMaxPay+="+";
+    }
 
-    QMessageBox mbCalculated;
 
-    mbCalculated.setText(calculated);
+    if(calculatedWindow)
+        return;
+    calculatedWindow = new CalculatedWindow(displayedMinPay,displayedMaxPay);
+    calculatedWindow->show();
+    connect(calculatedWindow, &CalculatedWindow::onDelete, this, &Widget::onCalculatedWindowClosed);
+}
 
-    mbCalculated.exec();
+
+void Widget::on_pushButton_2_clicked()
+{
+    QMessageBox help;
+
+    help.setTextFormat(Qt::RichText);
+    QString helpText = "Количество выполненных миссий персонажа можно <br> "
+                       "посмотреть в Датабуках или в различных Вики по Наруто.<br> "
+                       "Минимальная и максимальная суммы были разделены на 4, исходя <br> "
+                       "из предположения о том, что вознаграждение делится на команду. <br> "
+                       "Налог не учитывается, так как он неизвестен. <br><br> "
+                        "<a href=https://vk.com/igraidokonca>Сообщить об ошибке</a>";
+
+    help.setText(helpText);
+    help.exec();
+
+}
+
+void Widget::onCalculatedWindowClosed()
+{
+    calculatedWindow = nullptr;
 }
 

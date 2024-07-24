@@ -1,6 +1,8 @@
 #ifndef WIDGET_H
 #define WIDGET_H
 
+#include "calculatedwindow.h"
+
 #include <QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -22,7 +24,11 @@ private slots:
 
     void on_pushButton_clicked();
 
+    void on_pushButton_2_clicked();
+
 private:
     Ui::Widget *ui;
+    CalculatedWindow* calculatedWindow = nullptr;
+    void onCalculatedWindowClosed();
 };
 #endif // WIDGET_H
